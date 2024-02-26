@@ -67,18 +67,19 @@ const CityHolder = styled.div`
 `;
 
 export default function CartPage() {
-  const {cartProducts,addProduct,removeProduct,clearCart} = useContext(CartContext);
-  const [products,setProducts] = useState([]);
-  const [name,setName] = useState('');
-  const [email,setEmail] = useState('');
-  const [city,setCity] = useState('');
-  const [postalCode,setPostalCode] = useState('');
-  const [streetAddress,setStreetAddress] = useState('');
-  const [country,setCountry] = useState('');
-  const [isSuccess,setIsSuccess] = useState(false);
+  const {cartProducts, addProduct, removeProduct, clearCart} = useContext(CartContext);
+  const [products, setProducts] = useState([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [country, setCountry] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  
   useEffect(() => {
     if (cartProducts.length > 0) {
-      axios.post('/api/cart', {ids:cartProducts})
+      axios.post('/api/cart', {ids: cartProducts})
         .then(response => {
           setProducts(response.data);
         })
@@ -86,6 +87,7 @@ export default function CartPage() {
       setProducts([]);
     }
   }, [cartProducts]);
+  
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
@@ -95,21 +97,25 @@ export default function CartPage() {
       clearCart();
     }
   }, []);
+
   function moreOfThisProduct(id) {
     addProduct(id);
   }
+
   function lessOfThisProduct(id) {
     removeProduct(id);
   }
+
   async function goToPayment() {
     const response = await axios.post('/api/checkout', {
-      name,email,city,postalCode,streetAddress,country,
+      name, email, city, postalCode, streetAddress, country,
       cartProducts,
     });
     if (response.data.url) {
       window.location = response.data.url;
     }
   }
+
   let total = 0;
   for (const productId of cartProducts) {
     const price = products.find(p => p._id === productId)?.price || 0;
@@ -131,6 +137,7 @@ export default function CartPage() {
       </>
     );
   }
+
   return (
     <>
       <Header />
@@ -219,7 +226,7 @@ export default function CartPage() {
                      onChange={ev => setCountry(ev.target.value)}/>
               <Button black block
                       onClick={goToPayment}>
-                        Continew with Payment
+                Continue to payment
               </Button>
             </Box>
           )}
